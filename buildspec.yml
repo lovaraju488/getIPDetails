@@ -6,7 +6,8 @@ phases:
       python: 3.7
     commands:
       - aws --version
-      - echo Installing the depencies 
+      - echo Installing the depencies
+      - pip install --upgrade pip
       - pip install -r src/requirements.txt -t ./src
   pre_build:
     commands:
