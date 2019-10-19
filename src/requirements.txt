@@ -1,0 +1,11 @@
+Flask==1.1.1
+Flask-RESTful==0.3.7
+jsonschema==2.6.0
+pylint==1.9.5
+regex==2018.8.29
+requests==2.22.0
+rsa==3.4.2
+virtualenv==16.4.1
+virtualenv-clone==0.5.1
+virtualenvwrapper==4.8.4
+websocket-client==0.54.0

@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    This is a SAM model for FlexiLoans-Amazon Lending API Integration
+
+Parameters:
+  LambdaRole:
+    Type: String
+    Default: arn:aws:iam::861760085416:role/LambdaServiceRole
+  StageName:
+    Type: String
+    AllowedPattern: "^[a-zA-Z][-a-zA-Z0-9]*$"
+    Default: green
+ 
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,x-api-key,X-Amz-Security-Token,X-Amz-User-Agent'"
+      AllowOrigin: "'*'"
+
+Resources:
+
+  GetIpDataEventPermission:
+    Type: "AWS::Lambda::Permission"
+    DependsOn:
+    - IPDataRestApi
+    - GetIpDataEvent
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GetIpDataEvent
+      Principal: apigateway.amazonaws.com
+
+  IPDataRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: IpDataApi
+      StageName: !Ref StageName
+      EndpointConfiguration: REGIONAL
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: "IpDataApi"
+        paths:
+          /{get_my_ip}:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetIpDataEvent.Arn}/invocations
+                responses: {}
+                httpMethod: "POST"
+                type: "aws_proxy"                
+
+  GetIpDataEvent:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/
+      Handler: index.lambda_handler
+      Runtime: python2.7
+      Role: !Ref LambdaRole
+      Events:
+        GetIpData:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{get_my_ip}
+            Method: get
+            RestApiId:
+              Ref: IPDataRestApi
