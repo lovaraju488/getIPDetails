@@ -1,0 +1,12 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - aws --version 
+      - pip install -r src/requirements.txt -t ./src
+  Deploy:
+    commands:
+      - sam --version
+      - chmod +x ./scripts/deploy.sh
+      - sh scripts/deploy.sh
