@@ -3,10 +3,11 @@ version: 0.2
 phases:
   install:
     commands:
-      - aws --version 
+      - aws --version
+      - echo Installing the depencies 
       - pip install -r src/requirements.txt -t ./src
-  Deploy:
+  pre_build:
     commands:
       - sam --version
-      - chmod +x ./scripts/deploy.sh
-      - sh scripts/deploy.sh
+      - sam package --template-file ./template.yaml --output-template-file ./packaged.yaml --s3-bucket "sam-assignment" --region ap-south-1 
+      - sam deploy --template-file ./packaged.yaml --stack-name GetIpData-green --capabilities CAPABILITY_IAM --region ap-south-1
