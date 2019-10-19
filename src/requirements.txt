@@ -1,7 +1,7 @@
 Flask==1.1.1
 Flask-RESTful==0.3.7
 jsonschema==2.6.0
-pylint==1.9.5
+pylint==2.4.3
 regex==2018.8.29
 requests==2.22.0
 rsa==3.4.2
