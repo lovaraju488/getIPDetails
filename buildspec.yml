@@ -11,6 +11,9 @@ phases:
       - pip install -r src/requirements.txt -t ./src
   pre_build:
     commands:
+      - pip install --user aws-sam-cli
+      - USER_BASE_PATH=$(python -m site --user-base)
+      - export PATH=$PATH:$USER_BASE_PATH/bin
       - sam --version
       - sam package --template-file ./template.yaml --output-template-file ./packaged.yaml --s3-bucket "sam-assignment" --region ap-south-1 
       - sam deploy --template-file ./packaged.yaml --stack-name GetIpData-green --capabilities CAPABILITY_IAM --region ap-south-1
