@@ -1,6 +1,7 @@
 ###SAM
 
 ## To run locally
+## Testing
 ```
 sam local start-api
 ```
